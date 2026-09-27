@@ -1,0 +1,1 @@
+# senshots-watch
