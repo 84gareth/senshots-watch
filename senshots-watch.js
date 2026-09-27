@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * SEN Shots watcher  v1.0.0
+ * SEN Shots watcher  v1.0.1
  * Checks https://sen-shots.cic-connect.co.uk/ and sends a phone alert (via ntfy)
  * when a Drills & Games session has spaces, or when a new date is posted.
  * It does NOT book anything - you tap the alert and book by hand.
@@ -46,7 +46,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 const PAGE = 'https://sen-shots.cic-connect.co.uk/';
 const TOPIC = process.env.NTFY_TOPIC || '';
 const MATCH = /drills/i; // only Drills & Games, not the sensory sessions
@@ -69,6 +69,7 @@ function decode(s) {
 // Flatten HTML to lines of text, keeping link targets as "HREF:" lines.
 function flatten(html) {
   const withLinks = html
+    .replace(/\s+/g, ' ') // headings can wrap across source lines
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
     .replace(/<a\b[^>]*?href=["']([^"']+)["'][^>]*>/gi, '\nHREF:$1\n')
