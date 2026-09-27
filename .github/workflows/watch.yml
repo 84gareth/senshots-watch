@@ -1,0 +1,27 @@
+name: senshots-watch
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with:
+          path: senshots-state.json
+          key: senshots-${{ github.run_id }}
+          restore-keys: senshots-
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node senshots-watch.js --once
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: senshots-state.json
+          key: senshots-${{ github.run_id }}
